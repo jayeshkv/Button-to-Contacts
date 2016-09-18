@@ -32,9 +32,25 @@ public class MainActivity extends AppCompatActivity {
             if(resultCode == ActionBarActivity.RESULT_OK) {
                 Uri contactData = data.getData();
                 Cursor c = getContentResolver().query(contactData,null,null,null,null);
+
                 if(c.moveToFirst()) {
-                    String name = c.getString(c.getColumnIndexOrThrow(ContactsContract.Contacts.DISPLAY_NAME));
-                    Toast.makeText(this,"Name picked ="+name,Toast.LENGTH_LONG).show();
+                    String id = c.getString(c.getColumnIndexOrThrow(ContactsContract.Contacts._ID));
+                    String number = c.getString(c.getColumnIndexOrThrow(ContactsContract.Contacts.HAS_PHONE_NUMBER));
+
+                    if(number.equalsIgnoreCase("1")) {
+                        Cursor pho = getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,null,
+                                ContactsContract.CommonDataKinds.Phone.CONTACT_ID +" = "+ id,null, null);
+
+                        pho.moveToFirst();
+                        String cNumber = pho.getString(pho.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+                        String nameContact = c.getString(c.getColumnIndexOrThrow(ContactsContract.Contacts.DISPLAY_NAME));
+                        Toast.makeText(getApplicationContext(), "number = "+cNumber+" - name - "+nameContact, Toast.LENGTH_SHORT).show();
+
+
+
+                    }  else {
+
+                    }
 
                 }
             }
